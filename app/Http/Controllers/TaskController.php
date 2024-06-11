@@ -35,15 +35,25 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+           'number' => 'required|integer',
+       ]);
+    //    dd($validatedData);
+       // Create a new Task instance and save the validated data
+       $task = Task::create([
+           'number' => $validatedData['number'],
+       ]);
+    
+       // Return a response, typically a redirect or a JSON response
+       return response()->json([
+           'message' => 'Task created successfully',
+           'task' => $task
+       ], 201);
+        //s
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
-     */
+    
     public function show(Task $task)
     {
         //
@@ -81,5 +91,10 @@ class TaskController extends Controller
     public function destroy(Task $task)
     {
         //
+    }
+
+    public function getNumbers(){
+        $tasks=Task::select('number')->get();
+        return response()->json($tasks);
     }
 }
