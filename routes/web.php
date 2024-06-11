@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,3 +18,5 @@ Route::get('/', function () {
     return view('welcome');
     // dd('hello');
 });
+Route::resource('tasks',TaskController::class);
+Route::get('/tasks/get/data',[TaskController::class,'getNumbers']);

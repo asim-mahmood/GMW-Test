@@ -5075,9 +5075,72 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      tasks: [],
+      number: 0,
+      result: ''
+    };
+  },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    this.fetchTasks();
+  },
+  methods: {
+    fetchTasks: function fetchTasks() {
+      var _this = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/tasks/get/data').then(function (response) {
+        _this.tasks = response.data;
+      })["catch"](function (error) {
+        console.error('Error fetching tasks:', error);
+      });
+    },
+    saveNumber: function saveNumber() {
+      var _this2 = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        url: 'tasks',
+        method: 'POST',
+        data: {
+          number: this.number
+        }
+      }).then(function (response) {
+        _this2.tasks.push({
+          "number": response.data.task.number
+        });
+        _this2.number = 0;
+      });
+    },
+    findMax: function findMax() {
+      var numbers = this.tasks.map(function (task) {
+        return task.number;
+      });
+      if (numbers.length > 0) {
+        var max = Math.max.apply(Math, _toConsumableArray(numbers));
+        this.result = "Max number: ".concat(max);
+      } else {
+        this.result = 'No valid numbers found in the array.';
+      }
+    },
+    findMin: function findMin() {
+      var numbers = this.tasks.map(function (task) {
+        return task.number;
+      });
+      if (numbers.length > 0) {
+        var min = Math.min.apply(Math, _toConsumableArray(numbers));
+        this.result = "Min number: ".concat(min);
+      } else {
+        this.result = 'No valid numbers found in the array.';
+      }
+    }
   }
 });
 
@@ -5098,24 +5161,26 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
-  return _vm._m(0);
-};
-var staticRenderFns = [function () {
-  var _vm = this,
-    _c = _vm._self._c;
   return _c("div", {
     staticClass: "container"
   }, [_c("div", {
     staticClass: "row justify-content-center"
   }, [_c("div", {
-    staticClass: "col-md-8"
+    staticClass: "col-md-12"
   }, [_c("div", {
     staticClass: "card"
   }, [_c("div", {
     staticClass: "card-header"
   }, [_vm._v("SheMeansWork Task Component")]), _vm._v(" "), _c("div", {
     staticClass: "card-body"
-  }, [_c("form", [_c("div", {
+  }, [_c("form", {
+    on: {
+      submit: function submit($event) {
+        $event.preventDefault();
+        return _vm.saveNumber.apply(null, arguments);
+      }
+    }
+  }, [_c("div", {
     staticClass: "mb-3"
   }, [_c("label", {
     staticClass: "form-label",
@@ -5123,11 +5188,26 @@ var staticRenderFns = [function () {
       "for": "exampleInputNumber"
     }
   }, [_vm._v("Enter Number")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.number,
+      expression: "number"
+    }],
     staticClass: "form-control",
     attrs: {
       type: "number",
       id: "exampleInputNumber",
       "aria-describedby": "number"
+    },
+    domProps: {
+      value: _vm.number
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.number = $event.target.value;
+      }
     }
   }), _vm._v(" "), _c("div", {
     staticClass: "form-text"
@@ -5136,8 +5216,27 @@ var staticRenderFns = [function () {
     attrs: {
       type: "submit"
     }
-  }, [_vm._v("Submit")])])])])])])]);
-}];
+  }, [_vm._v("Submit")])])])]), _vm._v(" "), _c("div", {
+    staticClass: "row p-2 border rounded shadow no-gutters mx-1 mt-3"
+  }, [_c("button", {
+    staticClass: "btn btn-success btn-block mb-4",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.findMax
+    }
+  }, [_vm._v("Find Max")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-danger btn-block",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.findMin
+    }
+  }, [_vm._v("Find Min")]), _vm._v(" "), _c("p", [_vm._v(_vm._s(_vm.result))])])])])]);
+};
+var staticRenderFns = [];
 render._withStripped = true;
 
 
@@ -39335,6 +39434,18 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
 /******/ 		};
 /******/ 	})();
 /******/ 	
